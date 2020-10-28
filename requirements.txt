@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+Pillow
+mongoengine
+mongoengine_goodjson
+jsonify
+motor
+pydantic
+pymongo
