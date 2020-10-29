@@ -1,15 +1,23 @@
-from mongoengine import *
+from pydantic import BaseModel, validator
 
 
-class Address(Document):
+class Address(BaseModel):
 
-    address = StringField(required=True)
-    city = StringField(required=True)
-    neighborhood = StringField(required=True)
-    uf = StringField(required=True)
-    number = IntField(required=True)
-    observation = StringField()
+    address: str
+    city: str
+    neighborhood: str
+    uf: str
+    number: int
+    observation: str
 
-    meta = {
-        'collection': 'address'
-    }
+    @validator('uf')
+    def _validade_uf(cls, uf):
+        if len(uf) != 2:
+            raise ValueError('uf should be have 2 (two) char')
+        return uf
+
+    @validator('number')
+    def _validade_uf(cls, number):
+        if number < 0:
+            raise ValueError('number do not be less than 0 (zero)')
+        return number

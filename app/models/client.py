@@ -1,20 +1,14 @@
-from uuid import uuid4
-
-from mongoengine import *
+from pydantic import BaseModel, Field, validator
 
 from app.models.address import Address
+from app.utils.generate_id import generate_id
 
 
-class Client(Document):
+class Client(BaseModel):
 
-    nick_name = StringField(required=True)
-    full_name = StringField(required=True)
-    email = EmailField(required=True)
-    password = StringField(required=True)
-    photo = ImageField()
-    address = ReferenceField(Address)
-
-    meta = {
-        'collection': 'clients',
-        'indexes': ['email']
-    }
+    id: str = Field(default_factory=generate_id, alias='_id')
+    full_name: str
+    email: str
+    password: str
+    photo: str = None
+    address: Address = None
