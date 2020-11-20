@@ -1,10 +1,22 @@
 from fastapi import FastAPI
+from mongoengine import connect
 
-from app.api.routes.food_router import food_router
+from app.api.v1.routes.food_category_route import food_category_route
+from app.utils.settings import SETTINGS
 
 app = FastAPI()
 
-app.include_router(food_router, tags=["Food"], prefix="/food")
+
+@app.on_event("startup")
+def on_startup():
+    connect(host=SETTINGS.MONGO_URI)
+
+
+app.include_router(
+    food_category_route,
+    prefix="/food_category",
+    tags=['food_category']
+)
 
 
 @app.get("/")

@@ -1,14 +1,16 @@
 import os
 
-from pydantic import BaseModel, validator
+from app.core.singleton_model import SingletonModel
 
 
-class SETTINGS(BaseModel):
+class SETTINGS(metaclass=SingletonModel):
 
     MONGO_URI: str = os.getenv('MONGO_URL', None)
-    ITEM_PER_PAGE: int = 10
+    ITEM_PER_PAGE: int = 2
 
-    @validator('MONGO_URI')
-    def validate_mongo_uri(cls, mongo_url):
-        if not mongo_url:
+    def __init__(self):
+        self.validate_mongo_uri()
+
+    def validate_mongo_uri(self):
+        if not self.MONGO_URI:
             raise ValueError('MONGO_URI should be not empty')

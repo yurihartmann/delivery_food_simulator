@@ -7,3 +7,4 @@ jsonify
 motor
 pydantic
 pymongo
+starlette
