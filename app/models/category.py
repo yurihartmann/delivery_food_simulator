@@ -1,13 +1,13 @@
 from mongoengine import *
 
 from app.utils.serialize_document import SerializeDocument
-from app.utils.generate_id import generate_id
+from app.utils.uuid_utils import generate_uuid
 from app.utils.settings import SETTINGS
 
 
 class FoodCategory(Document, SerializeDocument):
 
-    id = StringField(required=True, primary_key=True, default=generate_id)
+    id = StringField(required=True, primary_key=True, default=generate_uuid)
     name = StringField(required=True, max_length=50)
     description = StringField(default='')
 

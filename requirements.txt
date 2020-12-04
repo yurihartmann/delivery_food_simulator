@@ -1,7 +1,7 @@
 fastapi
 uvicorn
 Pillow
-mongoengine
+mongoengine==0.21.0
 mongoengine_goodjson
 jsonify
 motor

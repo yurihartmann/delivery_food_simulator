@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from starlette.responses import JSONResponse
 
-from app.api.v1.validations.food_category import FoodCategorySchema
+from app.api.v1.validations.food_category_validators import FoodCategorySchema
 from app.models.category import FoodCategory
 from app.utils.settings import SETTINGS
 
