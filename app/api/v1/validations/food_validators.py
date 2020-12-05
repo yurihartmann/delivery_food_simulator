@@ -19,7 +19,7 @@ class FoodSchema(BaseModel):
         return price
 
     @validator('food_categories_id')
-    def validate_price(cls, food_categories_id):
+    def validate_food_categories_id(cls, food_categories_id):
         for food_category_id in food_categories_id:
             if not is_valid_uuid(food_category_id):
                 raise ValueError(f"Is not a valid food_category_id {food_category_id}")

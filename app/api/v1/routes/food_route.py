@@ -3,6 +3,7 @@ from starlette.responses import JSONResponse
 
 from app.api.v1.validations.food_validators import FoodFilterSchema, FoodSchema
 from app.core.logger import logger
+from app.models.category import FoodCategory
 from app.models.food import Food
 from app.utils.settings import SETTINGS
 
@@ -26,8 +27,9 @@ def get_all_foods(page: int = 1,
         return {
             "info": {
                 "page": page,
-                "next_page": page + 1 if SETTINGS.ITEM_PER_PAGE * page < food_query.count() else None,
-                "total": food_query.count()
+                "next_page": page + 1 if SETTINGS.ITEMS_PER_PAGE * page < food_query.count() else None,
+                "total": food_query.count(),
+                "items_per_page": SETTINGS.ITEMS_PER_PAGE
             },
             "data": [food_categories.serialize() for food_categories in food_query]
         }
@@ -36,11 +38,11 @@ def get_all_foods(page: int = 1,
         return JSONResponse(status_code=400, content={"message": "Error in get food categories"})
 
 
-@food_route.get("/{id}")
-def get_food_by_id(id: str):
+@food_route.get("/{food_id}")
+def get_food_by_id(food_id: str):
     """Get food for id"""
     try:
-        food = Food.get_by_id(id)
+        food = Food.get_by_id(food_id)
 
         if not food:
             return JSONResponse(status_code=404, content={"message": "Food do not exist!"})
@@ -53,11 +55,34 @@ def get_food_by_id(id: str):
 
 
 @food_route.post("/")
-def get_food_by_id(food: FoodSchema):
+def save_food(food: FoodSchema):
     """Save new food"""
     try:
-        return Food(**food.dict()).save()
+        food = food.dict()
+        food['food_categories'] = []
+        for food_category_id in food.get('food_categories_id'):
+            food['food_categories'].append(FoodCategory.get_by_id(food_category_id))
+
+        del food['food_categories_id']
+
+        return Food(**food).save().serialize()
 
     except (Exception) as err:
         logger.error(f"Error in save food - Error: {err}")
         return JSONResponse(status_code=400, content={"message": "Error in save food"})
+
+
+@food_route.delete("/{food_id}")
+def save_food(food_id: str):
+    """Save new food"""
+    try:
+        food = Food.get_by_id(id=food_id)
+        if not food:
+            return JSONResponse(status_code=400, content={"message": "Food do not exists"})
+
+        food.delete()
+        return {"message": "Food deleted!"}
+
+    except (Exception) as err:
+        logger.error(f"Error in delete food - Error: {err}")
+        return JSONResponse(status_code=400, content={"message": "Error in delete food"})
