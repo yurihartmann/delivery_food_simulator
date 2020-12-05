@@ -1,10 +1,11 @@
 fastapi
 uvicorn
 Pillow
-mongoengine==0.21.0
+mongoengine
 mongoengine_goodjson
 jsonify
 motor
 pydantic
 pymongo
 starlette
+PyJWT

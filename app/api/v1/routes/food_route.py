@@ -1,10 +1,12 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Security
 from starlette.responses import JSONResponse
 
 from app.api.v1.validations.food_validators import FoodFilterSchema, FoodSchema
 from app.core.logger import logger
+from app.models.admin_user import AdminUser
 from app.models.category import FoodCategory
 from app.models.food import Food
+from app.utils.autentication import authenticate_admin_user
 from app.utils.settings import SETTINGS
 
 food_route = APIRouter()
@@ -55,7 +57,7 @@ def get_food_by_id(food_id: str):
 
 
 @food_route.post("/")
-def save_food(food: FoodSchema):
+def save_food(food: FoodSchema, current_user: AdminUser = Security(authenticate_admin_user)):
     """Save new food"""
     try:
         food = food.dict()
@@ -73,7 +75,7 @@ def save_food(food: FoodSchema):
 
 
 @food_route.delete("/{food_id}")
-def save_food(food_id: str):
+def save_food(food_id: str, current_user: AdminUser = Security(authenticate_admin_user)):
     """Save new food"""
     try:
         food = Food.get_by_id(id=food_id)
