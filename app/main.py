@@ -12,8 +12,8 @@ app = FastAPI()
 
 @app.on_event("startup")
 def on_startup():
-    connect(host=SETTINGS.MONGO_URI)
-    mongoengine.get_db()
+    # connect(host=SETTINGS.MONGO_URI)
+    # mongoengine.get_db()
     logger.info("Startup flow successful")
 
 
