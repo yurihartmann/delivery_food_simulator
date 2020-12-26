@@ -4,8 +4,6 @@ from mongoengine import connect
 
 from app.api.v1.v1_route import v1_route
 from app.core.logger import logger
-from app.models.user import User, PERMISSIONS
-from app.utils.settings import SETTINGS
 
 app = FastAPI()
 
