@@ -5,18 +5,18 @@ from fastapi import Depends, Security, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from starlette import status
 
-from app.models.admin_user import AdminUser
+from app.models.user import User
 from app.utils.settings import SETTINGS
 
 oauth2_scheme = OAuth2PasswordBearer(
-    tokenUrl="v1/admin/login",
+    tokenUrl="v1/user/login",
 )
 
 
-def get_admin_current_user(token: str = Depends(oauth2_scheme)):
+def get_current_user(token: str = Depends(oauth2_scheme)):
     try:
         payload = jwt.decode(token, SETTINGS.SECRET_KEY, algorithms=[SETTINGS.ALGORITHM])
-        user = AdminUser.get_by_email(payload.get('email'))
+        user = User.get_by_email(payload.get('email'))
         if not user:
             raise Exception
         return user
@@ -28,8 +28,28 @@ def get_admin_current_user(token: str = Depends(oauth2_scheme)):
         )
 
 
-def authenticate_admin_user(current_user: AdminUser = Security(get_admin_current_user)):
+def authenticate_user(current_user: User = Security(get_current_user)):
     return current_user
+
+
+def authenticate_admin_user(current_user: User = Security(get_current_user)):
+    if "admin" in current_user.permissions:
+        return current_user
+
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Do not permission for this action",
+    )
+
+
+def authenticate_client_user(current_user: User = Security(get_current_user)):
+    if "client" in current_user.permissions:
+        return current_user
+
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Do not permission for this action",
+    )
 
 
 def create_access_token(data: dict):

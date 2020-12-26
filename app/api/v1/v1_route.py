@@ -1,15 +1,15 @@
 from fastapi import APIRouter
 
-from app.api.v1.routes.admin_user_route import admin_user_route
 from app.api.v1.routes.food_category_route import food_category_route
 from app.api.v1.routes.food_route import food_route
+from app.api.v1.routes.user_route import user_route
 
 v1_route = APIRouter()
 
 v1_route.include_router(
-    admin_user_route,
-    prefix="/admin",
-    tags=['Administration']
+    user_route,
+    prefix="/user",
+    tags=['User']
 )
 
 v1_route.include_router(

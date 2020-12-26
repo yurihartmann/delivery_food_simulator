@@ -1,10 +1,14 @@
+from app.models.address import Address
 from app.utils.safe_mixin_document import SafeMixinDocument
 from mongoengine import *
 
+from app.utils.settings import SETTINGS
 from app.utils.uuid_utils import generate_uuid
 
+PERMISSIONS = ['client', 'admin']
 
-class AdminUser(SafeMixinDocument, Document):
+
+class User(SafeMixinDocument, Document):
 
     id = StringField(required=True, primary_key=True, default=generate_uuid)
     first_name = StringField(required=True, max_length=50)
@@ -12,20 +16,23 @@ class AdminUser(SafeMixinDocument, Document):
     email = EmailField(required=True, unique=True)
     hashed_password = StringField(required=True)
     url_photo = URLField(default=None)
+    address = ListField(ReferenceField(Address))
+    permissions = ListField(StringField(choices=PERMISSIONS, default=PERMISSIONS[0]), required=True)
 
     meta = {
-        'collection': 'admin_users',
+        'collection': 'users',
         'indexes': [
             'first_name',
             'last_name',
             'email',
+            'permissions'
         ]
     }
 
     @classmethod
     def get_by_email(cls, email):
-        return AdminUser.objects(email=email).first()
+        return User.objects(email=email).first()
 
     @classmethod
     def authenticate(cls, email, password):
-        return AdminUser.objects(email=email, hashed_password=password).first()
+        return User.objects(email=email, hashed_password=password).first()

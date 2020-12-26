@@ -3,8 +3,8 @@ from starlette.responses import JSONResponse
 
 from app.api.v1.validations.food_category_validators import FoodCategorySchema
 from app.core.logger import logger
-from app.models.admin_user import AdminUser
 from app.models.category import FoodCategory
+from app.models.user import User
 from app.utils.autentication import authenticate_admin_user
 from app.utils.settings import SETTINGS
 
@@ -46,7 +46,7 @@ def get_food_categories_by_id(food_category_id: str):
 
 
 @food_category_route.post('/')
-def save_food_categories(fody_category_schema: FoodCategorySchema, current_user: AdminUser = Security(authenticate_admin_user)):
+def save_food_categories(fody_category_schema: FoodCategorySchema, current_user: User = Security(authenticate_admin_user)):
     """Save a new food category"""
     try:
         food_category = FoodCategory(**fody_category_schema.dict()).save()
@@ -58,7 +58,7 @@ def save_food_categories(fody_category_schema: FoodCategorySchema, current_user:
 
 
 @food_category_route.delete('/{food_category_id}')
-def delete_food_categories(food_category_id: str, current_user: AdminUser = Security(authenticate_admin_user)):
+def delete_food_categories(food_category_id: str, current_user: User = Security(authenticate_admin_user)):
     """Delete food category"""
     try:
         food_category = FoodCategory.get_by_id(id=food_category_id)
