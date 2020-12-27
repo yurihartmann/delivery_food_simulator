@@ -36,3 +36,7 @@ class User(SafeMixinDocument, Document):
     @classmethod
     def authenticate(cls, email, password):
         return User.objects(email=email, hashed_password=password).first()
+
+    @classmethod
+    def get_by_id(cls, id):
+        return User.objects(id=id).first()

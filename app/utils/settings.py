@@ -1,4 +1,5 @@
 import os
+from typing import Any
 
 from app.core.singleton_model import SingletonModel
 
@@ -11,9 +12,19 @@ class SETTINGS(metaclass=SingletonModel):
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
 
-    def __init__(self):
+    def __init__(self, **data: Any):
+        super().__init__(**data)
         self.validate_mongo_uri()
 
     def validate_mongo_uri(self):
         if not self.MONGO_URI:
             raise ValueError('MONGO_URI should be not empty')
+
+    def serialize(self):
+        return {
+            "MONGO_URI": self.MONGO_URI,
+            "ITEMS_PER_PAGE": self.ITEMS_PER_PAGE,
+            "SECRET_KEY": self.SECRET_KEY,
+            "ALGORITHM": self.ALGORITHM,
+            "ACCESS_TOKEN_EXPIRE_MINUTES": self.ACCESS_TOKEN_EXPIRE_MINUTES,
+        }

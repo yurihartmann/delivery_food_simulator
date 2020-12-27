@@ -12,7 +12,7 @@ food_category_route = APIRouter()
 
 
 @food_category_route.get('/')
-def get_all_food_categories(page: int = 1, name: str = None):
+async def get_all_food_categories(page: int = 1, name: str = None):
     """Get All food categories"""
     try:
         food_categories_query = FoodCategory.get_all(page=page, name=name)
@@ -31,7 +31,7 @@ def get_all_food_categories(page: int = 1, name: str = None):
 
 
 @food_category_route.get('/{food_category_id}')
-def get_food_categories_by_id(food_category_id: str):
+async def get_food_categories_by_id(food_category_id: str):
     """Get food category by id"""
     try:
         food_category = FoodCategory.get_by_id(id=food_category_id)
@@ -46,7 +46,7 @@ def get_food_categories_by_id(food_category_id: str):
 
 
 @food_category_route.post('/')
-def save_food_categories(fody_category_schema: FoodCategorySchema, current_user: User = Security(authenticate_admin_user)):
+async def save_food_categories(fody_category_schema: FoodCategorySchema, current_user: User = Security(authenticate_admin_user)):
     """Save a new food category"""
     try:
         food_category = FoodCategory(**fody_category_schema.dict()).save()
@@ -58,7 +58,7 @@ def save_food_categories(fody_category_schema: FoodCategorySchema, current_user:
 
 
 @food_category_route.delete('/{food_category_id}')
-def delete_food_categories(food_category_id: str, current_user: User = Security(authenticate_admin_user)):
+async def delete_food_categories(food_category_id: str, current_user: User = Security(authenticate_admin_user)):
     """Delete food category"""
     try:
         food_category = FoodCategory.get_by_id(id=food_category_id)

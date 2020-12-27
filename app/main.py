@@ -4,14 +4,15 @@ from mongoengine import connect
 
 from app.api.v1.v1_route import v1_route
 from app.core.logger import logger
+from app.utils.settings import SETTINGS
 
 app = FastAPI()
 
 
 @app.on_event("startup")
 def on_startup():
-    # connect(host=SETTINGS.MONGO_URI)
-    # mongoengine.get_db()
+    connect(host=SETTINGS.MONGO_URI)
+    mongoengine.get_db()
     logger.info("Startup flow successful")
 
 
@@ -24,3 +25,8 @@ app.include_router(
 @app.get("/")
 def hello():
     return {"Hello": "World"}
+
+
+@app.get("/env")
+def get_env():
+    return SETTINGS().serialize()

@@ -13,7 +13,7 @@ food_route = APIRouter()
 
 
 @food_route.get("/")
-def get_all_foods(page: int = 1,
+async def get_all_foods(page: int = 1,
                   food_category_id: str = None,
                   name: str = None,
                   min_price: float = None,
@@ -41,7 +41,7 @@ def get_all_foods(page: int = 1,
 
 
 @food_route.get("/{food_id}")
-def get_food_by_id(food_id: str):
+async def get_food_by_id(food_id: str):
     """Get food for id"""
     try:
         food = Food.get_by_id(food_id)
@@ -57,7 +57,7 @@ def get_food_by_id(food_id: str):
 
 
 @food_route.post("/")
-def save_food(food: FoodSchema, current_user: User = Security(authenticate_admin_user)):
+async def save_food(food: FoodSchema, current_user: User = Security(authenticate_admin_user)):
     """Save new food"""
     try:
         food = food.dict()
@@ -75,9 +75,8 @@ def save_food(food: FoodSchema, current_user: User = Security(authenticate_admin
 
 
 @food_route.delete("/{food_id}")
-def save_food(food_id: str, current_user: User
-= Security(authenticate_admin_user)):
-    """Save new food"""
+async def delete_food(food_id: str, current_user: User = Security(authenticate_admin_user)):
+    """Delete food"""
     try:
         food = Food.get_by_id(id=food_id)
         if not food:
