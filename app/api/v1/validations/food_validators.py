@@ -40,6 +40,8 @@ class FoodFilterSchema(BaseModel):
 
     @validator('max_price')
     def validate_max_price(cls, max_price, values):
+        if not max_price:
+            return None
         if max_price and max_price < 0:
             raise ValueError('max_price can not be less than zero!')
         if values.get('min_price') and max_price <= values['min_price']:

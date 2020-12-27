@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import List
 
 from bson import DBRef
 from mongoengine import *
