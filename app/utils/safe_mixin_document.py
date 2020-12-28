@@ -30,6 +30,8 @@ class SafeMixinDocument:
                     for dbrefs in data_field_name:
                         list_of_ids.append(str(dbrefs.id))
                     dict_json[field_name] = list_of_ids
+                elif isinstance(data_field_name[0], EmbeddedDocument):
+                    dict_json[field_name] = [data.serialize() for data in data_field_name]
                 else:
                     dict_json[field_name] = data_field_name
             else:
